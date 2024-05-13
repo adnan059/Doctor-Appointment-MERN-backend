@@ -36,6 +36,10 @@ const connectDB = async () => {
 connectDB();
 /////////////////////////////////////
 
+app.get("/", (req, res) => {
+  res.status(200).json("Working");
+});
+
 app.use("/api/users", userRoutes);
 app.use("/api/doctors", doctorRoutes);
 app.use("/api/admin", adminRoutes);
