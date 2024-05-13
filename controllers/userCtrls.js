@@ -146,7 +146,8 @@ const checkBookingAvailabilityCtrl = async (req, res, next) => {
 
     const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
 
-    const todaysDate = new Date(Date.now()).toISOString();
+    const todaysDate = new Date().toISOString();
+    console.log(todaysDate);
 
     const doctorId = req.body.doctorId;
 
