@@ -153,9 +153,13 @@ const checkBookingAvailabilityCtrl = async (req, res, next) => {
 
     const doctor = await Doctor.findById(doctorId);
 
-    // if (time > doctor.timings[1] || time < doctor.timings[0]) {
-    //   return next(createError(400, "Appointment Not Available"));
-    // }
+    if (
+      time > moment(doctor.timings[1], "HH:mm").toISOString() ||
+      time < moment(doctor.timings[0], "HH:mm").toISOString() ||
+      date < moment(todaysDate, "HH:mm").toISOString()
+    ) {
+      return next(createError(400, "Appointment Not Available"));
+    }
 
     const fromTime = moment(req.body.time, "HH:mm")
       .subtract(30, "minutes")
