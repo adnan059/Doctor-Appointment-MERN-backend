@@ -142,24 +142,9 @@ const checkBookingAvailabilityCtrl = async (req, res, next) => {
       return next(createError(400, "invalid Date or Time"));
     }
 
-    const time = moment(req.body.time, "HH:mm").toISOString();
-
     const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
 
-    const todaysDate = new Date().toISOString();
-    console.log(todaysDate);
-
     const doctorId = req.body.doctorId;
-
-    const doctor = await Doctor.findById(doctorId);
-
-    if (
-      time > moment(doctor.timings[1], "HH:mm").toISOString() ||
-      time < moment(doctor.timings[0], "HH:mm").toISOString() ||
-      date < moment(todaysDate, "HH:mm").toISOString()
-    ) {
-      return next(createError(400, "Appointment Not Available"));
-    }
 
     const fromTime = moment(req.body.time, "HH:mm")
       .subtract(30, "minutes")
