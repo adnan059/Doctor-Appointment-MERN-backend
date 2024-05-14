@@ -146,9 +146,9 @@ const checkBookingAvailabilityCtrl = async (req, res, next) => {
 
     const doctorId = req.body.doctorId;
 
-    const fromTime = moment(req.body.time, "HH:mm")
-      .subtract(30, "minutes")
-      .toISOString();
+    // const fromTime = moment(req.body.time, "HH:mm")
+    //   .subtract(30, "minutes")
+    //   .toISOString();
 
     const toTime = moment(req.body.time, "HH:mm")
       .add(30, "minutes")
@@ -158,7 +158,7 @@ const checkBookingAvailabilityCtrl = async (req, res, next) => {
       doctorId,
       date,
       time: {
-        $gte: fromTime,
+        // $gte: fromTime,
         $lte: toTime,
       },
     });
