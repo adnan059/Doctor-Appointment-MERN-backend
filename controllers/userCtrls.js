@@ -158,7 +158,6 @@ const checkBookingAvailabilityCtrl = async (req, res, next) => {
       doctorId,
       date,
       time: {
-        // $gte: fromTime,
         $lte: toTime,
       },
     });
