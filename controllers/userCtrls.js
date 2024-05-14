@@ -104,10 +104,13 @@ const bookAppointmentCtrl = async (req, res, next) => {
     ) {
       return next(createError(400, "invalid Date or Time"));
     }
-    req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString();
-    req.body.time = moment(req.body.time, "HH:mm").toISOString();
+    // req.body.date = moment(req.body.date, "DD-MM-YYYY").toISOString();
+    // req.body.time = moment(req.body.time, "HH:mm").toISOString();
 
-    const newAppointment = await Appointment.create(req.body);
+    const newAppointment = await Appointment.create({
+      ...req.body,
+      date: req.body.date.split("T")[0],
+    });
     const user = await User.findById(req.body.doctorToBeBooked.userId);
     const notifs = user.notifications;
     notifs.unshift({
@@ -142,7 +145,9 @@ const checkBookingAvailabilityCtrl = async (req, res, next) => {
       return next(createError(400, "invalid Date or Time"));
     }
 
-    const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
+    console.log(req.body.time, "...............", req.body.date);
+
+    //const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
 
     const doctorId = req.body.doctorId;
 
@@ -150,17 +155,26 @@ const checkBookingAvailabilityCtrl = async (req, res, next) => {
     //   .subtract(30, "minutes")
     //   .toISOString();
 
-    const toTime = moment(req.body.time, "HH:mm")
-      .add(30, "minutes")
-      .toISOString();
+    const toTime = new Date(
+      new Date(req.body.time).getTime() - 1800000
+    ).toISOString();
+
+    const fromTime = new Date(
+      new Date(req.body.time).getTime() + 0
+    ).toISOString();
+
+    console.log("totime=>", toTime);
 
     const appointments = await Appointment.find({
       doctorId,
-      date,
+      date: req.body.date.split("T")[0],
       time: {
-        $lte: toTime,
+        $gte: toTime,
+        $lte: fromTime,
       },
     });
+
+    console.log(appointments);
 
     if (appointments.length > 0) {
       return res.status(200).json({
